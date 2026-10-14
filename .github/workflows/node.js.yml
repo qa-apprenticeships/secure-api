@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,6 +17,10 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
+    - name: set up Docker
+      uses: docker/setup-docker-action@v5
+    - name: Set up Docker Compose
+      uses: docker/setup-compose-action@v2
     - name: Set environment variables
       run: echo "NODE_ENV=test" >> $GITHUB_ENV
     - name: Prepare dependencies
@@ -25,7 +30,7 @@ jobs:
     - name: Run all tests
       run: npm test
     - name: Archive test and code-coverage results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v7
       if: ${{ always() }}
       with:
         name: test-and-code-coverage-report
